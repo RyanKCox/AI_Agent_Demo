@@ -14,21 +14,31 @@ initial_state={
     "user_prefered_temperature_unit":tag_fahrenheit,
 }
 
+RESET = "\033[0m"
+CYAN = "\033[36m"
+YELLOW = "\033[33m"
+MAGENTA = "\033[35m"
+GREEN = "\033[32m"
+GREY = "\033[90m"
+
+def color(text,code):
+    return f"{code}{text}{RESET}"
+
 def print_event(event, main_agent:str):
     """Show text, tool calls/results, and sub-agent transfers"""
     author = getattr(event, "author", "?")
     for call in event.get_function_calls():
         if call.name == "transfer_to_agent":
             target = (call.args or {}).get("agent_name", "?")
-            print(f"  --> {author}: transfering to sub-agent: {target}")
+            print(color(f"  --> {author}: transfering to sub-agent: {target}", CYAN))
         else:
-            print(f"  --> {author}: calling tool: {call.name}({dict(call.args or {})})")
+            print(color(f"  --> {author}: calling tool: {call.name}({dict(call.args or {})})",GREEN))
     for resp in event.get_function_responses():
-        print(f"  <-- {author} tool '{resp.name}' returned: {resp.response}")
+        print(color(f"  <-- {author} tool '{resp.name}' returned: {resp.response}",YELLOW))
 
     for part in event.content.parts:
         if getattr(part, "thought", False) and part.text:
-            print(f"\033[90m[{author} thinking: {part.text.strip()}\033[0m")
+            print(color(f"{author} thinking: {part.text.strip()}",GREY))
         elif part.text and part.text.strip():
             print(f"[{main_agent}]: {part.text}")
 

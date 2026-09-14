@@ -1,12 +1,13 @@
 from google.adk.agents.llm_agent import Agent
 from tools import WeatherTools
-from config import AGENT_MODEL
+from config import AGENT_MODEL, AGENT_PLANNER
 from guardrails import keyword_guardrail, tool_guardrail
 
 
 weather_agent = Agent(
     model=AGENT_MODEL,
     name='weather_agent',
+    planner=AGENT_PLANNER,
     instruction="You are the weather agent (state-aware). Use the get_weather tool to "
                 "fetch weather information for the city provided by the user.",
     description="Handles fetching of weather data for user input",

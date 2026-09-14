@@ -1,12 +1,10 @@
 from google.adk.agents.llm_agent import Agent
 from google.adk.tools.tool_context import ToolContext
-from google.genai.types import ThinkingConfig
 
 from sub_agents import GreetingAgents
 from sub_agents import WeatherAgents
-from config import AGENT_MODEL
+from config import AGENT_MODEL, AGENT_PLANNER
 from guardrails import keyword_guardrail, tool_guardrail
-from google.adk.planners import BuiltInPlanner
 
 # Mock tool implementation
 def get_current_time(city: str) -> dict:
@@ -16,17 +14,10 @@ def get_last_city(tool_context: ToolContext) -> str:
     city =  tool_context.state.get("last_city_checked", "None")
     return city
 
-planner = BuiltInPlanner(
-    thinking_config=ThinkingConfig(
-        include_thoughts=True,
-        thinking_budget=256
-    ),
-)
-
 root_agent = Agent(
     model=AGENT_MODEL,
     name='root_agent',
-    planner=planner,
+    planner=AGENT_PLANNER,
     description="Allows the user to check the time and weather in the given city..",
     instruction="You are a helpful assistant that tells the current time or weather in cities. "
                 "Use the 'get_current_time' tool for giving the time."
