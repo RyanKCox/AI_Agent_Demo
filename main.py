@@ -26,10 +26,11 @@ def print_event(event, main_agent:str):
     for resp in event.get_function_responses():
         print(f"  <-- {author} tool '{resp.name}' returned: {resp.response}")
 
-    if event.content and event.content.parts:
-        text = "".join(part.text or "" for part in event.content.parts)
-        if text.strip():
-            print(f"[{main_agent}]: {text}")
+    for part in event.content.parts:
+        if getattr(part, "thought", False) and part.text:
+            print(f"\033[90m[{author} thinking: {part.text.strip()}\033[0m")
+        elif part.text and part.text.strip():
+            print(f"[{main_agent}]: {part.text}")
 
 
 async def call_agent_async(runner: Runner, query: str) -> None:
