@@ -1,6 +1,7 @@
 from google.adk.agents.llm_agent import Agent
 from tools import GreetingTools
 from config import AGENT_MODEL
+from guardrails import keyword_guardrail
 
 greeting_agent = Agent(
     model=AGENT_MODEL,
@@ -12,6 +13,7 @@ greeting_agent = Agent(
     "Do not engage in any other conversations or tasks",
     description="Handles simple greetings and hellos using the 'say_hello' tool",
     tools=[GreetingTools.say_hello],
+    before_model_callback=keyword_guardrail.keyword_guardrail
 )
 
 farewall_agent = Agent(
@@ -22,5 +24,6 @@ farewall_agent = Agent(
     instruction="You are the farewell agent. Your only task is to provide a polite farewell message to the user"
     "Use the 'say_goodbye' tool to handle the farewell message when the user indicates they are leaving or ending the "
                 "conversation. If the user has provided their name pass it along to the tool."
-    "Do not engage in any other conversations or tasks"
+    "Do not engage in any other conversations or tasks",
+    before_model_callback=keyword_guardrail.keyword_guardrail
 )

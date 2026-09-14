@@ -1,8 +1,9 @@
 from google.adk.agents.llm_agent import Agent
 from google.adk.tools.tool_context import ToolContext
-from SubAgents import GreetingAgents
-from SubAgents import WeatherAgents
+from sub_agents import GreetingAgents
+from sub_agents import WeatherAgents
 from config import AGENT_MODEL
+from guardrails import keyword_guardrail
 
 # Mock tool implementation
 def get_current_time(city: str) -> dict:
@@ -25,4 +26,5 @@ root_agent = Agent(
                 "Use the 'get_last_city'; tool to fetch fron context the last city checked",
     tools=[get_current_time, get_last_city],
     sub_agents=[GreetingAgents.farewall_agent, GreetingAgents.greeting_agent, WeatherAgents.weather_agent],
+    before_model_callback=keyword_guardrail.keyword_guardrail
 )
