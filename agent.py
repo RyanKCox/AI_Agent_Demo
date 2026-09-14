@@ -1,7 +1,16 @@
 from google.adk.agents.llm_agent import Agent
-from tools import WeatherTools
+from google.adk.tools.tool_context import ToolContext
 from SubAgents import GreetingAgents
+from SubAgents import WeatherAgents
 from config import AGENT_MODEL
+
+# Mock tool implementation
+def get_current_time(city: str) -> dict:
+    """Returns the current time in a specified city."""
+    return {"status": "success", "city": city, "time": "10:30 AM"}
+def get_last_city(tool_context: ToolContext) -> str:
+    city =  tool_context.state.get("last_city_checked", "None")
+    return city
 
 root_agent = Agent(
     model=AGENT_MODEL,
@@ -9,10 +18,11 @@ root_agent = Agent(
     description="Allows the user to check the time and weather in the given city..",
     instruction="You are a helpful assistant that tells the current time or weather in cities. "
                 "Use the 'get_current_time' tool for giving the time."
-                "Use the 'get_weather' tool for giving the weather."
+                "Use the 'weather_agent' to fetch weather conditions for the user."
                 "Start the conversation by greeting the user and asking for their name."
                 "use the 'greeting_agent' to greet and respond to the user."
-                "Use the 'farewell_agent' when the user signifies they are ending the conversation",
-    tools=[WeatherTools.get_current_time, WeatherTools.get_weather],
-    sub_agents=[GreetingAgents.farewall_agent, GreetingAgents.greeting_agent],
+                "Use the 'farewell_agent' when the user signifies they are ending the conversation"
+                "Use the 'get_last_city'; tool to fetch fron context the last city checked",
+    tools=[get_current_time, get_last_city],
+    sub_agents=[GreetingAgents.farewall_agent, GreetingAgents.greeting_agent, WeatherAgents.weather_agent],
 )

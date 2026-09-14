@@ -5,12 +5,13 @@ from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
 from agent import root_agent
+from config import tag_celsius, tag_fahrenheit
 
 APP_NAME="AI Tutorial App"
 USER_ID="user1"
 SESSION_ID="session1"
 initial_state={
-    "user_preference_temperature_unit":"Celsius",
+    "user_prefered_temperature_unit":tag_fahrenheit,
 }
 
 def print_event(event, main_agent:str):
