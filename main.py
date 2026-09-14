@@ -9,6 +9,9 @@ from agent import root_agent
 APP_NAME="AI Tutorial App"
 USER_ID="user1"
 SESSION_ID="session1"
+initial_state={
+    "user_preference_temperature_unit":"Celsius",
+}
 
 def print_event(event, main_agent:str):
     """Show text, tool calls/results, and sub-agent transfers"""
@@ -43,6 +46,7 @@ async def main():
         app_name=APP_NAME,
         user_id=USER_ID,
         session_id=SESSION_ID,
+        state=initial_state,
     )
     runner = Runner(
         app_name=APP_NAME,
